@@ -2,10 +2,17 @@ import { createStaticNavigation, NavigationContainer, StaticParamList } from "@r
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeTabs } from "./homenavigator";
 import { NotFound } from "../navigation/screens/NotFound";
+import Login from "../navigation/screens/Login";
 
 
 const RootStack = createNativeStackNavigator({
   screens: {
+    login: {
+        screen: Login,
+        options: {
+            title: 'Login',
+        },
+    },
     HomeTabs: {
       screen: HomeTabs,
       options: {

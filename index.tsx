@@ -1,4 +1,6 @@
 import './gesture-handler';
+// Import the global.css file in the index.js file:
+import './global.css';
 
 import '@expo/metro-runtime'; // Necessary for Fast Refresh on Web
 import { registerRootComponent } from 'expo';
