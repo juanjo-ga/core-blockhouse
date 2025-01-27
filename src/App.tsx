@@ -4,6 +4,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Navigation } from './components/rootnavigation';
+import { Provider } from 'react-redux';
+import store from './context/store';
 
 // Asset.loadAsync([
 //   ...NavigationAssets,
@@ -14,12 +16,12 @@ import { Navigation } from './components/rootnavigation';
 SplashScreen.preventAutoHideAsync();
 
 export function App() {
+
+
   return (
     
-
-
-    
-    <Navigation/>
-    
+    <Provider store={store}>
+      <Navigation/>
+    </Provider>
   );
 }
