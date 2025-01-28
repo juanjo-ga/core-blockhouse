@@ -2,6 +2,7 @@
   "expo": {
     "name": "core-blockhouse",
     "slug": "core-blockhouse",
+    "owner": "juanjose0618",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
