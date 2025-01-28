@@ -7,7 +7,6 @@ import { loadAuthState } from '../../utils/storage';
 
 
 
-
 export  function Home() {
 
   const navigation = useNavigation();
