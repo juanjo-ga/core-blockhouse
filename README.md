@@ -51,6 +51,13 @@
     4. Install Dependencies: 
     - **Yarn** (Recommended)
     ``yarn install``
+
+    > **Warning**
+    > IOS Will require provisional profiles, Furthermore IOS will also require Cocoapods to installed and linked in XCODE
+
+    > **NOTE**
+    > This project was not able to ran on IOS due to provisional profiles being locked behind apple developer subscription. Did not have access to macbook
+    
     5. Use expo to do `expo build:ios` and `yarn run ios`
 
     ##### Web
