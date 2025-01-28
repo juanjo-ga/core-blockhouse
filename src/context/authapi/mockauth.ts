@@ -16,6 +16,30 @@ const UserLogin = async (credentials: { email: string; password: string }) => {
     });
 };
 
+const UserSingup = async (credentials: { email: string; password: string }) => {
+    return new Promise<{user: {id: number, email: string, password: string}}>((resolve, reject) => {
+        setTimeout(() => {
+          resolve(
+              {user: {id: Math.floor(Math.random() * 100), email: credentials.email, password: credentials.password}}
+          )
+        }, 1000)
+    });
+};
+
+
+
+export const signin = createAsyncThunk(
+  'auth/signin',
+  async (credentials: { email: string; password: string }, thunkAPI) => {
+    try {
+      // Replace with your actual login API call
+      const response = await UserSingup(credentials);
+      return response.user;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 
 export const login = createAsyncThunk(

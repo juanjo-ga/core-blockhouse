@@ -59,7 +59,7 @@ export default function Login() {
 
 
     return (
-        <div className="flex flex-1 justify-center items-center p-6">
+        <div className="flex flex-1 justify-center flex-col items-center p-6">
             <div className="flex flex-col  justify-center border border-gray-300 rounded-xl max-w-sm h-1/2 shadow p-4 shadow-black text-card-foreground bg-card">
             <div className="flex flex-col space-y-1.5 p-6">
                 <div className="flex justify-center">
@@ -69,29 +69,44 @@ export default function Login() {
                 </div>
                 <div className="font-semibold tracking-tight text-2xl">Login</div>
                 <div className="text-sm text-muted-foreground">Enter your email below to login to your account</div>
-                <form className="flex-col flex" onSubmit={handleSubmit(handleLogin)}>
+                <form className="flex-col flex space-y-2" onSubmit={handleSubmit(handleLogin)}>
+                <div className="space-y-1">
                 <input
-                    className='rounded-md p-2'
+                    className='rounded-md p-2 border border-gray-300 w-full' 
                     {...register('email')}
                     style={styles.input}
-                    placeholder="Email"                    
+                    placeholder="example@mail.com"                    
                 
                 />
                 {errors.email?.message && <p className="text-red-500">{String(errors.email.message)}</p>}
+                </div>
+                <div className="space-y-1">
                 <input 
-                    className='rounded-md p-2'
+                    className='rounded-md p-2 w-full'
                     {...register('password')}
                     style={styles.input}
-                    placeholder="Password"                    
+                    placeholder="password"                    
                 
                 />
                 {errors.password?.message && <p className="text-red-500">{String(errors.password.message)}</p>}
+                </div>
+
+                {error && <p className="text-red-500">Error: Invalid login, login is example@mail.com, password </p>}
                 <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-black text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full" title="Login" type="submit" >
                     Login
                 </button>
             </form>
+                <div className="text-center text-sm">
+                    Don't have an account? 
+                    <button onClick={() => navigation.navigate('signup')} className="p-1 underline underline-offset-4">Sign up</button>
+                </div>
             </div>
             
+            </div>
+            <div className="text-balance text-center text-xs max-w-sm text-muted-foreground space-y-1.5 ">
+                <p>Since mock data is currently being fed and there is not backend, the Login is </p>
+                <span>example@mail.com</span><br/>
+                <span>password</span>
             </div>
         </div>
     );
@@ -112,7 +127,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 12,
+
         paddingHorizontal: 8,
     },
 });

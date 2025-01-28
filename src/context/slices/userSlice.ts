@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { User, UserState } from "../../types/User";
-import { login } from "../authapi/mockauth";
+import { login, signin } from "../authapi/mockauth";
 import { clearAuthState, saveAuthState } from "../../utils/storage";
 
 const initialState: UserState = {
@@ -37,6 +37,20 @@ const authSlice = createSlice({
             state.error = "Invalid email or password";
         })
         builder.addCase(login.fulfilled, (state, action: { payload: any; }) => {
+            state.loading = false;
+            state.isAuthed = true;
+            state.user = action.payload;
+            saveAuthState(action.payload);
+        })
+        builder.addCase(signin.pending, (state, action: any) => {
+            state.loading = true;
+            state.error = null;
+        })
+        builder.addCase(signin.rejected, (state) => {
+            state.loading = false;
+            state.error = "Invalid email or password";
+        })
+        builder.addCase(signin.fulfilled, (state, action: { payload: any; }) => {
             state.loading = false;
             state.isAuthed = true;
             state.user = action.payload;

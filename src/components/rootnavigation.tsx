@@ -4,8 +4,7 @@ import { HomeTabs } from "./homenavigator";
 import { NotFound } from "../navigation/screens/NotFound";
 import Login from "../navigation/screens/Login";
 import { isSignedIn } from "../hooks/authHooks";
-import Signup from "../navigation/screens/signup";
-
+import Signup from "../navigation/screens/Signup";
 
 
 
@@ -23,6 +22,7 @@ const RootStack = createNativeStackNavigator({
             title: 'Login',
         },
     },
+    
     HomeTabs: {
       if: isSignedIn,
       screen: HomeTabs,
