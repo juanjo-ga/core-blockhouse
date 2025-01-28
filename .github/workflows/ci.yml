@@ -21,7 +21,7 @@ jobs:
           node-version: '17'  # Specify the Node.js version
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: Run Lint
-        run: npm run lint
+        run: yarn run lint
