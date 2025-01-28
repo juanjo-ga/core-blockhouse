@@ -107,8 +107,34 @@ export default function Signup() {
                 />
                 {errors.confirmPassword?.message && <p className="text-red-500">{String(errors.confirmPassword.message)}</p>}
                 </div>
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-black text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full" title="Login" type="submit" >
-                    Sign up
+                <button 
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-black text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full" 
+                title="Signup" 
+                type="submit" 
+                disabled={loading}
+                >
+                    {loading ? <svg
+                    className="animate-spin h-6 w-6 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    aria-label="Loading"
+                    >
+                    <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                    ></circle>
+                    <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
+                    </svg> : 
+                    'Sign up'}
                 </button>
             </form>
                 <div className="text-center text-sm">
