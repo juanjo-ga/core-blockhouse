@@ -3,10 +3,20 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeTabs } from "./homenavigator";
 import { NotFound } from "../navigation/screens/NotFound";
 import Login from "../navigation/screens/Login";
+import { isSignedIn } from "../hooks/authHooks";
+import Signup from "../navigation/screens/signup";
+
+
 
 
 const RootStack = createNativeStackNavigator({
   screens: {
+    signup: {
+        screen: Signup,
+        options: {
+            title: 'Signup',
+        },
+    },
     login: {
         screen: Login,
         options: {
@@ -14,9 +24,10 @@ const RootStack = createNativeStackNavigator({
         },
     },
     HomeTabs: {
+      if: isSignedIn,
       screen: HomeTabs,
       options: {
-        title: 'Home',
+        title: 'HomeTabs',
         headerShown: false,
       },
     },
@@ -29,6 +40,9 @@ const RootStack = createNativeStackNavigator({
         path: '*',
       },
     },
+  },
+  screenOptions: {
+    headerShown: false,
   },
 });
 

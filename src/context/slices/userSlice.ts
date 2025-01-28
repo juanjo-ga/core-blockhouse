@@ -1,5 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { UserState } from "../../types/User";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { User, UserState } from "../../types/User";
+import { login } from "../authapi/mockauth";
+import { clearAuthState, saveAuthState } from "../../utils/storage";
 
 const initialState: UserState = {
     user: null,
@@ -10,22 +12,39 @@ const initialState: UserState = {
 }
 
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        login: (state, action) => {
-            state.isAuthed = true;
-            state.user = action.payload;
+        setUser(state, action: PayloadAction<User>) {
+        state.user = action.payload;
+        state.isAuthed = true;
         },
-        signup: (state, action) => {
-            state.isAuthed = true;
-            state.user = action.payload;
-        },
-        logout: (state) => {
-            state.isAuthed = false;
+        logout(state) {
             state.user = null;
+            state.isAuthed = false;
+            clearAuthState();
         }
-    }
-})
+    },
+    extraReducers: (builder) => {
+        // Loading state
+        builder.addCase(login.pending, (state, action: any) => {
+            state.loading = true;
+            state.error = null;
+        })
+        builder.addCase(login.rejected, (state) => {
+            state.loading = false;
+            state.error = "Invalid email or password";
+        })
+        builder.addCase(login.fulfilled, (state, action: { payload: any; }) => {
+            state.loading = false;
+            state.isAuthed = true;
+            state.user = action.payload;
+            saveAuthState(action.payload);
+        })
+    },
 
+})
+export const { setUser, logout } = authSlice.actions;
+
+export default authSlice.reducer;

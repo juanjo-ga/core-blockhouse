@@ -1,4 +1,9 @@
-function isSignedIn() {
-    const user = localStorage.getItem("user");
-    return user ? true : false;
+import { useAppSelector } from "../utils/appContext";
+
+export function isSignedIn() {
+    const {isAuthed} = useAppSelector((state) => state.auth);
+    return isAuthed;
+
 }
+
+

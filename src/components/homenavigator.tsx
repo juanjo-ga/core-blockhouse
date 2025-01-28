@@ -6,10 +6,13 @@ export const HomeTabs = createBottomTabNavigator({
     Home: {
       screen: Home,
       options: {
-        title: 'Feed',
+        title: 'Home',
         
       },
     },
+  },
+  screenOptions: {
+    headerShown: false,
   },
 });
 
