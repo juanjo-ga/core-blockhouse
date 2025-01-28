@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "scheme": "coreblockhouse",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.juanjose0618"
     },
     "android": {
       "adaptiveIcon": {
