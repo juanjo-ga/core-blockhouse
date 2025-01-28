@@ -1,11 +1,18 @@
-import { useForm } from 'react-hook-form';
-import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { Controller, Form, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signin } from '../../context/authapi/mockauth';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../utils/appContext';
+import SignupButton from '../../components/ui/button';
+import { Svg, Path } from 'react-native-svg';
+import { getReadableValidationErrorMessage } from '../../utils/getvalidationErrors';
+import { TextInput } from '../../components/ui/textInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+
 
 export default function Signup() {
     const navigation = useNavigation();
@@ -16,7 +23,8 @@ export default function Signup() {
 
     const dispatch = useAppDispatch();
 
-    
+    const [shouldValidate] = useState()
+
 
     useEffect(() => {
         if (isAuthed) {
@@ -49,102 +57,137 @@ export default function Signup() {
     };
 
 
-
-    const {
-        register,
-        handleSubmit, 
-        formState: {errors}
-    } = useForm<{ email: string; password: string, confirmPassword: string}>({
+    const methods = useForm<{ email: string; password: string, confirmPassword: string}>({
         resolver: zodResolver(signupSchema),
         
     })
     
-
+    const onError: SubmitErrorHandler<{ email: string; password: string, confirmPassword: string}> = (
+        errors,
+        e
+    ) => {
+        console.log(JSON.stringify(errors));
+        // Alert.alert('Warning', getReadableValidationErrorMessage(errors));
+    };
 
     return (
-        
-        <div className="flex flex-1 justify-center flex-col items-center p-6">
-            <div className="flex flex-col  justify-center border border-gray-300 rounded-xl max-w-sm h-1/2 shadow p-4 shadow-black text-card-foreground bg-card">
-            <div className="flex flex-col space-y-1.5 p-6">
-                <div className="flex justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 22 25" fill="none" className='center'>
-                        <path d="M11.1743 0.430176L21.6989 6.50656V18.6593L11.1743 24.7357L0.649648 18.6593V6.50656L11.1743 0.430176Z" fill="#171717"/>
-                    </svg>
-                </div>
-                <div className="font-semibold tracking-tight text-2xl">Sign up</div>
-                <div className="text-sm text-muted-foreground">Enter your email below to login to your account</div>
-                <form className="flex-col flex space-y-2" onSubmit={handleSubmit(handleSignup)}>
-                <div className="space-y-1">
-                <input
-                    className='rounded-md p-2 border border-gray-300 w-full' 
-                    {...register('email')}
-                    style={styles.input}
-                    placeholder="Email"                    
-                
-                />
-                {errors.email?.message && <p className="text-red-500">{String(errors.email.message)}</p>}
-                </div>
-                <div className="space-y-1">
-                <input 
-                    className='rounded-md p-2 w-full'
-                    {...register('password')}
-                    style={styles.input}
-                    placeholder="Password"                    
-                
-                />
-                {errors.password?.message && <p className="text-red-500">{String(errors.password.message)}</p>}
-                </div>
-                <div className="space-y-1">
-                <input 
-                    className='rounded-md p-2 w-full'
-                    {...register('confirmPassword')}
-                    style={styles.input}
-                    placeholder="Confirm Password"                    
-                
-                />
-                {errors.confirmPassword?.message && <p className="text-red-500">{String(errors.confirmPassword.message)}</p>}
-                </div>
-                <button 
-                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-black text-white shadow hover:bg-primary/90 h-9 px-4 py-2 w-full" 
-                title="Signup" 
-                type="submit" 
-                disabled={loading}
-                >
-                    {loading ? <svg
-                    className="animate-spin h-6 w-6 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    aria-label="Loading"
+        <KeyboardAwareScrollView keyboardShouldPersistTaps={Platform.OS =='android' ? "handled": "always"}
+                className="flex flex-1">
+        <View className="flex flex-1 justify-center gap-y-10 flex-col items-center p-6">
+            <View className="flex flex-col justify-center rounded-xl max-w-m h-3/4  p-4 shadow-black text-card-foreground bg-card">
+            <View className="flex flex-col gap-y- p-4">
+                <View className="flex justify-center">
+                    <Svg width="50" height="50" viewBox="0 0 22 25" fill="none" className='center justify-center'>
+                        <Path d="M11.1743 0.430176L21.6989 6.50656V18.6593L11.1743 24.7357L0.649648 18.6593V6.50656L11.1743 0.430176Z" fill="#171717"/>
+                    </Svg>
+                </View>
+                <Text className="text-2xl font-semibold tracking-tight ">Sign up</Text>
+                <View className="flex-col flex space-y-2 text-sm text-muted-foreground">
+                    <Text>Enter your email below to login to your account</Text>
+                </View>
+                    <FormProvider {...methods}>
+                        <Controller
+                        control={methods.control}
+                        name="email"
+                        render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                        }) => {
+                            return (
+                            <TextInput
+                                label='Email'
+                                onBlur={onBlur}
+                                value={value}
+                                onChangeText={onChange}
+                                errorMessage={error?.message}
+                            />
+                            );
+                        }}
+                        />
+                        <Controller
+                        control={methods.control}
+                        name="password"
+                        render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                        }) => {
+                            return (
+                            <TextInput
+                                label='Password'
+                                className="border rounded-md h-10 border-gray-300 p-2"
+                                onBlur={onBlur}
+                                value={value}
+                                onChangeText={onChange}
+                                errorMessage={error?.message}
+                            />
+                            );
+                        }}
+                        />
+                        <Controller
+                        control={methods.control}
+                        name="confirmPassword"
+                        render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                        }) => {
+                            return (
+                            <TextInput
+                                label='Confirm Password'
+                                className="border rounded-md h-10 border-gray-300 p-2"
+                                onBlur={onBlur}
+                                value={value}
+                                onChangeText={onChange}
+                                errorMessage={error?.message}
+                            />
+                            );
+                        }}
+                        />
+                        
+                    </FormProvider>
+                <SignupButton
+                    loading={loading}
+                    title={"Sign Up"}
+                    disabled={loading}
+                    onPress={
+                        shouldValidate
+                        ? () => {
+                            /** we could also prevalidate using zod like below */
+
+                            // get current form values
+                            const currFormValues = methods.getValues();
+                            // https://zod.dev/?id=safeparse
+                            const result =
+                                signupSchema.safeParse(currFormValues);
+
+                            if (!result.success) {
+                                const formattedError = result.error.format();
+                                console.log(JSON.stringify(formattedError));
+                                Alert.alert(JSON.stringify(formattedError));
+                            } else {
+                                Alert.alert(
+                                'Validation is successful with zod'
+                                );
+                            }
+                            }
+                        : methods.handleSubmit(handleSignup, onError)
+                    }
                     >
-                    <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                    ></circle>
-                    <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    ></path>
-                    </svg> : 
-                    'Sign up'}
-                </button>
-            </form>
-                <div className="text-center text-sm">
-                    Have an account? 
-                    <button onClick={() => navigation.navigate('login')} className="p-1 underline underline-offset-4">Sign In</button>
-                </div>
-            </div>
+
+                </SignupButton>
+                <View className="">
+                    <Text className="text-sm text-center pb-4">Have an account?</Text> 
+                    <Pressable onPress={() => navigation.navigate('login')} className="inline-flex items-center justify-center  rounded-md disabled:opacity-50 bg-gray-200 text-white hover:bg-primary/90 h-9 px-4 py-2 w-full">
+                        <Text className="text-black font-medium text-sm">Log In</Text>
+                    </Pressable>
+                </View>
+            </View>
             
-            </div>
-            <div className="text-balance text-center text-xs max-w-sm text-muted-foreground space-y-1.5 ">
-                <p>You can put any details in for the purpose of testing, nothing will be stored after the userContext is destroyed (logged out)</p>
-            </div>
-        </div>
+            </View>
+            <View className="text-balance text-center text-xs max-w-sm  text-muted-foreground space-y-1.5 ">
+                <Text>You can put any details in for the purpose of testing, nothing will be stored after the userContext is destroyed (logged out)</Text>
+            </View>
+        </View>
+        </KeyboardAwareScrollView>
     );
 };
 const styles = StyleSheet.create({

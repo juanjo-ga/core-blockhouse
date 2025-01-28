@@ -1,23 +1,30 @@
-import { useForm } from 'react-hook-form';
-import React, { useEffect } from 'react';
-import {  StyleSheet } from 'react-native';
+import { Controller, FormProvider, SubmitErrorHandler, useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { Alert, Platform, Pressable, Text, View } from 'react-native';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { login } from '../../context/authapi/mockauth';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../utils/appContext';
 import SignupButton from '../../components/ui/button';
+import { Svg, Path } from 'react-native-svg';
+import { TextInput } from '../../components/ui/textInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default function Login() {
+
+
+export default function Signup() {
     const navigation = useNavigation();
 
+    
       
 
-    const {isAuthed, loading, error} = useAppSelector((state) => state.auth);
+    const {isAuthed, loading} = useAppSelector((state) => state.auth);
 
     const dispatch = useAppDispatch();
 
-    
+    const [shouldValidate] = useState()
+
 
     useEffect(() => {
         if (isAuthed) {
@@ -35,102 +42,123 @@ export default function Login() {
         password: z.string({
             required_error: 'Password is required',
             message: 'Password must be at least 6 characters',
-        }).min(6),
+        }).min(6)
     });
-
 
     const handleLogin = (values: { email: string; password: string }) => {
         dispatch(login(values));
     };
 
 
-
-    const {
-        register,
-        handleSubmit, 
-        formState: {errors}
-    } = useForm<{ email: string; password: string }>({
+    const methods = useForm<{ email: string; password: string}>({
         resolver: zodResolver(loginSchema),
         
     })
     
-
+    const onError: SubmitErrorHandler<{ email: string; password: string}> = (
+        errors,
+        e
+    ) => {
+        console.log(JSON.stringify(errors));
+        // Alert.alert('Warning', getReadableValidationErrorMessage(errors));
+    };
 
     return (
-        <div className="flex flex-1 justify-center flex-col items-center p-6">
-            <div className="flex flex-col  justify-center border border-gray-300 rounded-xl max-w-sm h-1/2 shadow p-4 shadow-black text-card-foreground bg-card">
-            <div className="flex flex-col space-y-1.5 p-6">
-                <div className="flex justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 22 25" fill="none" className='center'>
-                        <path d="M11.1743 0.430176L21.6989 6.50656V18.6593L11.1743 24.7357L0.649648 18.6593V6.50656L11.1743 0.430176Z" fill="#171717"/>
-                    </svg>
-                </div>
-                <div className="font-semibold tracking-tight text-2xl">Login</div>
-                <div className="text-sm text-muted-foreground">Enter your email below to login to your account</div>
-                <form className="flex-col flex space-y-2" onSubmit={handleSubmit(handleLogin)}>
-                <div className="space-y-1">
-                <input
-                    className='rounded-md p-2 border border-gray-300 w-full' 
-                    {...register('email')}
-                    style={styles.input}
-                    placeholder="example@mail.com"                    
-                
-                />
-                {errors.email?.message && <p className="text-red-500">{String(errors.email.message)}</p>}
-                </div>
-                <div className="space-y-1">
-                <input 
-                    className='rounded-md p-2 w-full'
-                    {...register('password')}
-                    style={styles.input}
-                    placeholder="password"                    
-                
-                />
-                {errors.password?.message && <p className="text-red-500">{String(errors.password.message)}</p>}
-                </div>
-
-                {error && <p className="text-red-500">Error: Invalid login, login is example@mail.com, password </p>}
-                <SignupButton
+        <KeyboardAwareScrollView keyboardShouldPersistTaps={Platform.OS =='android' ? "handled": "always"}
+        className="w-full h-full">
+        <View className="flex flex-1 justify-center flex-col gap-y-10 items-center p-6">
+            <View className="flex flex-col  justify-center rounded-xl max-w-m h-3/4  p-4 shadow-black text-card-foreground bg-card">
+            <View className="flex flex-col gap-y-2 p-4">
+                <View className="flex justify-center">
+                    <Svg width="50" height="50" viewBox="0 0 22 25" fill="none" className='center justify-center'>
+                        <Path d="M11.1743 0.430176L21.6989 6.50656V18.6593L11.1743 24.7357L0.649648 18.6593V6.50656L11.1743 0.430176Z" fill="#171717"/>
+                    </Svg>
+                </View>
+                <Text className="text-2xl font-semibold tracking-tight ">Log In</Text>
+                <View className="flex-col flex space-y-2 text-sm text-muted-foreground">
+                    <Text>Enter your email below to login to your account</Text>
+                </View>
+                    <FormProvider {...methods}>
+                        <Controller
+                        control={methods.control}
+                        name="email"
+                        render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                        }) => {
+                            return (
+                            <TextInput
+                                label='Email'
+                                onBlur={onBlur}
+                                value={value}
+                                onChangeText={onChange}
+                                errorMessage={error?.message}
+                            />
+                            );
+                        }}
+                        />
+                        <Controller
+                        control={methods.control}
+                        name="password"
+                        render={({
+                            field: { onChange, onBlur, value },
+                            fieldState: { error },
+                        }) => {
+                            return (
+                            <TextInput
+                                label='Password'
+                                className="border rounded-md h-10 border-gray-300 p-2"
+                                onBlur={onBlur}
+                                value={value}
+                                onChangeText={onChange}
+                                errorMessage={error?.message}
+                            />
+                            );
+                        }}
+                        />
+                    </FormProvider>
+                 <SignupButton
                     loading={loading}
-                    title='Log In'
+                    title={"Log In"}
                     disabled={loading}
-                    type="submit"
+                    onPress={
+                        shouldValidate
+                        ? () => {
+                            const currFormValues = methods.getValues();
+                            const result =
+                                loginSchema.safeParse(currFormValues);
+
+                            if (!result.success) {
+                                const formattedError = result.error.format();
+                                console.log(JSON.stringify(formattedError));
+                                Alert.alert(JSON.stringify(formattedError));
+                            } else {
+                                Alert.alert(
+                                'Validation is successful with zod'
+                                );
+                            }
+                            }
+                        : methods.handleSubmit(handleLogin, onError)
+                    }
                     >
 
                 </SignupButton>
-            </form>
-                <div className="text-center text-sm">
-                    Don't have an account? 
-                    <button onClick={() => navigation.navigate('signup')} className="p-1 underline underline-offset-4">Sign up</button>
-                </div>
-            </div>
+                <View className='pt-4'>
+                    <Text className="text-sm text-center pb-4">Have an account?</Text> 
+                    <Pressable onPress={() => navigation.navigate('signup')} className="inline-flex items-center justify-center  rounded-md disabled:opacity-50 bg-gray-200 text-white hover:bg-primary/90 h-9 px-4 py-2 w-full">
+                        <Text className="text-black font-medium text-sm">Sign Up</Text>
+                    </Pressable>
+                </View>
+            </View>
             
-            </div>
-            <div className="text-balance text-center text-xs max-w-sm text-muted-foreground space-y-1.5 ">
-                <p>Since mock data is currently being fed and there is not backend, the Login is </p>
-                <span>example@mail.com</span><br/>
-                <span>password</span>
-            </div>
-        </div>
+            </View>
+            <View className="text-balance text-center text-xs max-w-sm text-muted-foreground space-y-1.5 ">
+                <Text>Since mock data is currently being fed and there is not backend, the Login is </Text>
+                <Text>example@mail.com</Text>
+                <Text>password</Text>
+            </View>
+        </View>
+    </KeyboardAwareScrollView>
+   
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 16,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 16,
-        textAlign: 'center',
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-
-        paddingHorizontal: 8,
-    },
-});
