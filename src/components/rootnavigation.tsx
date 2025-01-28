@@ -1,9 +1,9 @@
-import { createStaticNavigation, NavigationContainer, StaticParamList } from "@react-navigation/native";
+import { createStaticNavigation, StaticParamList } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeTabs } from "./homenavigator";
 import { NotFound } from "../navigation/screens/NotFound";
 import Login from "../navigation/screens/Login";
-import { isSignedIn } from "../hooks/authHooks";
+import { IsSignedIn } from "../hooks/authHooks";
 import Signup from "../navigation/screens/Signup";
 
 
@@ -24,7 +24,7 @@ const RootStack = createNativeStackNavigator({
     },
     
     HomeTabs: {
-      if: isSignedIn,
+      if: IsSignedIn,
       screen: HomeTabs,
       options: {
         title: 'HomeTabs',

@@ -1,15 +1,11 @@
-import { useForm, useFormContext } from 'react-hook-form';
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import {  StyleSheet } from 'react-native';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import store from '../../context/store';
 import { login } from '../../context/authapi/mockauth';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../utils/appContext';
-import { HomeTabs } from '../../components/homenavigator';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function Login() {
     const navigation = useNavigation();
@@ -26,7 +22,7 @@ export default function Login() {
         if (isAuthed) {
             navigation.navigate('HomeTabs');
         }
-    }, [isAuthed]);
+    }, [isAuthed, navigation]);
 
 
     // Zod schema for login form, need to validate the form

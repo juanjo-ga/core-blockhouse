@@ -1,6 +1,4 @@
-import { Button, Text } from '@react-navigation/elements';
-import { StyleSheet, View } from 'react-native';
-import { useAppDispatch } from '../../utils/appContext';
+
 import { useNavigation } from '@react-navigation/native';
 import store from '../../context/store';
 import { logout } from '../../context/slices/userSlice';
@@ -26,7 +24,7 @@ export  function Home() {
 
   return (
     <main>
-    <header className="bg-gray-800 text-white fixed w-full z-10">
+    <header className="bg-black text-white fixed w-full z-10">
       <div className="container mx-auto flex items-center py-4 px-6">
         <h1 className="text-2xl font-bold">Juan Garcia</h1>
       </div>
@@ -58,11 +56,3 @@ export  function Home() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 10,
-  },
-});
